@@ -30,7 +30,7 @@ function pr_vec = get_pseudo_ranges_itr(t, eph, x)
             tau = distance / c;
             broadcast_time = initial_time - tau;
             ch_distance = sqrt(sum((xs_vec-xs_prev).^2,2))
-            display(ch_distance)
+%             display(ch_distance)
             xs_prev = xs_vec;
         end
         %% Now that we have broadcasting time we get SV_i bias estimation and update dSV vec 
