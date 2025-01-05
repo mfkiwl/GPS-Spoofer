@@ -19,18 +19,19 @@ function pr_vec = get_pseudo_ranges_itr(t, eph, x)
     %% For each SV we get the estimated broadcasting time (in iterative fashion),
     %% After which we use it to get the SV bias and estimated broadcasting location.
     for i = 1: numSV
-        broadcast_time = t;
-        prev_distance = 0;
-        distance_changes = inf;
-        while distance_changes < 0.1 
+        initial_time = t;
+        tau = 0;
+        ch_distance = inf;
+        xs_prev = [0,0,0];
+        while ch_distance > 5 
         %% Get estimated broadcasting time 
-            [xs_i, ys_i, zs_i] = get_satellite_position(eph{i}, broadcast_time , 1);
-            xs_vec = [xs_i, ys_i, zs_i];
+            xs_vec = get_satellite_position(eph{i}, initial_time-tau , 1);
             distance = ( sqrt(sum((xs_vec-x).^2,2)) );
             tau = distance / c;
-            broadcast_time = broadcast_time - tau;
-            distance_changes = abs(distance - prev_distance);
-            prev_distance = distance;
+            broadcast_time = initial_time - tau;
+            ch_distance = sqrt(sum((xs_vec-xs_prev).^2,2))
+            display(ch_distance)
+            xs_prev = xs_vec;
         end
         %% Now that we have broadcasting time we get SV_i bias estimation and update dSV vec 
         dsv_i = estimate_satellite_clock_bias(broadcast_time, eph{i});
