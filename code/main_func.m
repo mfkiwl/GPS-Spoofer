@@ -1,4 +1,4 @@
-function main_func(xml_path,N_frames,N_sv,user_ecef,output_path)
+function main_func(xml_path,N_frames,N_sv,user_ecef,output_path,linearized)
 %MAIN_FUNC the function takes a known ephemris data, and creates a wavefrom
 %that spoofs a user into a desired position.
 %   Inputs:
@@ -9,6 +9,7 @@ function main_func(xml_path,N_frames,N_sv,user_ecef,output_path)
 %       taken.
 %       user_ecef - desired user spoofing position in ecef coordinates
 %       ouput_path - final combined waveform output path
+%       linearize - 1=use PR lineariztion, 0=recalculate PR for every chunk
     %% create eph_struct
     eph_struct = eph_XML2struct(xml_path); %create ehpemeris structure.
     
@@ -63,6 +64,12 @@ function main_func(xml_path,N_frames,N_sv,user_ecef,output_path)
     f_dop = [6.98e3 -5.37e3 9.85e3 8.24e3 3e3 -6.58e3 7.32e3];
 
     %% create combined waveform
-    create_combined_waveform_linear_pr(user_ecef,eph_struct,f_dop,sv_vec,bs_mat,TOW,output_path);
+    if(linearized==1)
+        create_combined_waveform_linear_pr(user_ecef,eph_struct,f_dop,sv_vec,bs_mat,TOW,output_path);
+    else
+        create_combined_waveform(user_ecef,eph_struct,f_dop,sv_vec,bs_mat,TOW,output_path);
+    end
+
+    
 end
 

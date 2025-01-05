@@ -45,7 +45,7 @@ function create_combined_waveform_linear_pr(pos_ecef,eph_struct,doppler_vec,sv_v
     PR_slope = (PR_end-PR_start)/(ind_end-1); %PR slope vector (PR/ind)
 
     %combine SV waveforms
-    chunk_size = ca_rep_len; %desired chunk size
+    chunk_size = ca_rep_len/20; %desired chunk size
     num_chunks = floor(sv_wf_length/chunk_size)-1; %number of chunks to calculate, (-1) is to skip last bit to avoid edges
     for i=1:num_chunks
         ind_start = (i-1)*chunk_size+1; %current chunk's first index
